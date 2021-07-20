@@ -3,6 +3,8 @@
 const express = require('express');
 const cors = require('cors');
 
+const router = require("./routes");
+
 // Global app object
 const app = express();
 
@@ -10,6 +12,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/v1", router);
 
 // Handling not found errors
 app.use(function (req, res, next) {
