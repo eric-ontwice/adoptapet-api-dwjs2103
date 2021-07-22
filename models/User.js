@@ -13,6 +13,7 @@ class User {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
+        this.complete_name = name + ' ' + lastname;
     }
 }
 
