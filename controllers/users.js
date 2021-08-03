@@ -1,30 +1,44 @@
 /* Users controllers */
-
 const User = require('../models/User');
-
-const user1 = new User(1, "mariohd", "Mario", "Hernández", "mario@gmail.com");
-const user2 = new User(2, "johndoe", "John", "Doe", "johndoe@gmail.com");
-
-let usersDatabase = [user1, user2];
+const ObjectId = require('mongoose').Types.ObjectId;
 
 function getUsers(request, response) {
-    return response.send(usersDatabase);
+    User.find().then((users) => {
+        response.send(users)
+    });
 }
 
 function createUser(request, response) {
-    const id = usersDatabase.length + 1;
-    const newUser = new User(
-        id,
-        request.body.username,
-        request.body.name,
-        request.body.lastname,
-        request.body.email
-    );
-    usersDatabase.push(newUser);
-    return response.status(201).send(newUser);
+    const user = new User(request.body)
+    User.create(user).then((user) => {
+        response.status(201).send(user)
+    })
+    .catch((error) => {
+        response.status(400).send({
+            "message": error.message,
+            "type": error.name        
+        })
+    })
 };
+
+function updateUser(request, response) {
+    const id = request.params.id 
+    const body = request.body
+    
+    User.findOneAndUpdate({"_id": ObjectId(id)}, body)
+    .then( (user) => {
+        response.status(200).send(user)
+    })
+    .catch( error => {
+        response.status(400).send({
+            "message": error.message,
+            "type": error.name        
+        })
+    })
+}
 
 module.exports = {
     getUsers,
-    createUser
+    createUser,
+    updateUser
 }
